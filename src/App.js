@@ -1,28 +1,40 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+
+import { PRIMARY_COLOR, SECONDARY_COLOR } from './config'
+import MainPage from './containers/MainPage'
+import AddStudentPage from './containers/AddStudentPage'
+import Navbar from './components/commons/Navbar'
+
+const theme = createMuiTheme({
+    palette: {
+        primary: { main: PRIMARY_COLOR },
+        secondary: { main: SECONDARY_COLOR }
+    }
+})
+
+class App extends React.Component {
+    render() {
+        return (
+            <MuiThemeProvider theme={theme}>
+                <BrowserRouter>
+                    <>
+                        <CssBaseline />
+                        <Navbar />
+                        <Switch>
+                            <Route exact path='/add' component={AddStudentPage} />
+                            <Route path='*' component={MainPage} />
+                        </Switch>
+                    </>
+                </BrowserRouter>
+            </MuiThemeProvider>
+        )
+    }
 }
 
-export default App;
+export default App
+
