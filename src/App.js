@@ -6,8 +6,11 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
 import { PRIMARY_COLOR, SECONDARY_COLOR } from './config'
+
 import MainPage from './containers/MainPage'
 import AddStudentPage from './containers/AddStudentPage'
+import NotFoundPage from './containers/NotFoundPage'
+
 import Navbar from './components/commons/Navbar'
 
 const theme = createMuiTheme({
@@ -26,8 +29,9 @@ class App extends React.Component {
                         <CssBaseline />
                         <Navbar />
                         <Switch>
+                            <Route exact path='/' component={MainPage} />
                             <Route exact path='/add' component={AddStudentPage} />
-                            <Route path='*' component={MainPage} />
+                            <Route path='*' component={NotFoundPage} />
                         </Switch>
                     </>
                 </BrowserRouter>

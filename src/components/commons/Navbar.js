@@ -40,6 +40,11 @@ const Navbar = ({ classes }) => {
                         Create student
                     </Button>
                 </Link>
+                <Link to='/whydidyouclick' className={classes.customLink}>
+                    <Button color='primary' className={classNames(classes.margin, classes.cssRoot)}>
+                        Don't click on this /!\
+                    </Button>
+                </Link>
             </Toolbar>
         </AppBar>
     )
