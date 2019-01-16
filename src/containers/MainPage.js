@@ -56,7 +56,7 @@ class MainPage extends React.Component {
                 <Grid item xs={12}>
                     {studentList.length === 0 &&
                         <Typography variant='h3' className={classes.title}>
-                            No students yet...
+                            No students yet... Watch out for the angry sushi...
                         </Typography>
                     }
                 </Grid>
