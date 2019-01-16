@@ -53,6 +53,13 @@ class MainPage extends React.Component {
                         2018 - 2019 Wild code school students
                     </Typography>
                 </Grid>
+                <Grid item xs={12}>
+                    {studentList.length === 0 &&
+                        <Typography variant='h3' className={classes.title}>
+                            No students yet...
+                        </Typography>
+                    }
+                </Grid>
                 {studentList.map(student => {
                     return (
                         <Grid key={student._id} item xs={3}>

@@ -1,17 +1,17 @@
 import React from 'react'
+import axios from 'axios'
 import classNames from 'classnames'
 
 import { withStyles } from '@material-ui/core/styles'
-import { Button, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, CircularProgress, Grid, TextField, Typography } from '@material-ui/core'
 
-import { PRIMARY_COLOR, SECONDARY_COLOR } from '../config'
-
+import { API_URL, PRIMARY_COLOR, SECONDARY_COLOR } from '../config'
 
 const styles = theme => ({
     root: {
         flexGrow: 1,
         padding: '40px',
-        height: '100%',
+        height: '100%'
     },
     centered: {
         textAlign: 'center'
@@ -19,17 +19,29 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-        width: 250,
+        width: 250
     },
     cssRoot: {
         color: theme.palette.getContrastText(PRIMARY_COLOR),
         backgroundColor: PRIMARY_COLOR,
         '&:hover': {
-            backgroundColor: SECONDARY_COLOR,
+            backgroundColor: SECONDARY_COLOR
         }
     },
     margin: {
+        margin: theme.spacing.unit
+    },
+    buttonProgress: {
+        color: SECONDARY_COLOR,
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+    wrapper: {
         margin: theme.spacing.unit,
+        position: 'relative'
     }
 })
 
@@ -41,7 +53,8 @@ class AddStudentPage extends React.Component {
             email: '',
             firstName: '',
             lastName: '',
-            favoriteDessert: ''
+            favoriteDessert: '',
+            isLoading: false
         }
     }
 
@@ -49,8 +62,40 @@ class AddStudentPage extends React.Component {
         this.setState({ [ev.target.id]: ev.target.value })
     }
 
-    handleCreateStudent = ev => {
-        console.log('click :', this.state)
+    handleCreateStudent = async ev => {
+        const { avatarFile, email, firstName, lastName, favoriteDessert } = this.state
+
+        const student = {
+            email,
+            firstName,
+            lastName,
+            favoriteDessert
+        }
+
+        try {
+            this.setState({ isLoading: true })
+            const createStudentResult = await axios.post(`${API_URL}/students`, student)
+            console.log('createStudentResult', createStudentResult)
+            if (createStudentResult.status === 200) {
+                const nStudentId = createStudentResult.data._id
+                const params = {
+                    operation: 'putObject',
+                    keyName: `${nStudentId}/avatar.jpg`
+                }
+                const getPreSignedUrlResult = await axios.post(`${API_URL}/students/presignedurl`, params)
+                if (getPreSignedUrlResult.status === 200) {
+                    const preSignedUrl = getPreSignedUrlResult.data
+                    const uploadFileResult = await axios.put(preSignedUrl, avatarFile)
+                    if (uploadFileResult.status === 200) {
+                        console.log('GG')
+                    }
+                }
+            }
+        } catch (err) {
+            console.log('err : ', err.message)
+        } finally {
+            this.setState({ isLoading: false })
+        }
 
     }
 
@@ -60,7 +105,7 @@ class AddStudentPage extends React.Component {
 
     render() {
         const { classes } = this.props
-        const { email, favoriteDessert, firstName, lastName } = this.state
+        const { email, favoriteDessert, firstName, lastName, isLoading } = this.state
 
         return (
             <Grid container spacing={24} className={classes.root}>
@@ -90,10 +135,18 @@ class AddStudentPage extends React.Component {
                         </Grid>
                     </Grid>
                 </Grid>
+
                 <Grid item xs={12} className={classes.centered}>
-                    <Button color='primary' onClick={this.handleCreateStudent} className={classNames(classes.margin, classes.cssRoot)}>
-                        Create student
-                    </Button>
+                    <div className={classes.wrapper}>
+                        <Button variant='contained'
+                            color='primary'
+                            className={classNames(classes.margin, classes.cssRoot)}
+                            disabled={isLoading}
+                            onClick={this.handleCreateStudent}>
+                            Create student
+                        </Button>
+                        {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                    </div>
                 </Grid>
             </Grid>
         )
