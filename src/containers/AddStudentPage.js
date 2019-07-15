@@ -75,7 +75,6 @@ class AddStudentPage extends React.Component {
         try {
             this.setState({ isLoading: true })
             const createStudentResult = await axios.post(`${API_URL}/students`, student)
-            console.log('createStudentResult', createStudentResult)
             if (createStudentResult.status === 200) {
                 const nStudentId = createStudentResult.data._id
                 const params = {
@@ -83,6 +82,7 @@ class AddStudentPage extends React.Component {
                     keyName: `${nStudentId}/avatar.jpg`
                 }
                 const getPreSignedUrlResult = await axios.post(`${API_URL}/students/presignedurl`, params)
+
                 if (getPreSignedUrlResult.status === 200) {
                     const preSignedUrl = getPreSignedUrlResult.data
                     const uploadFileResult = await axios.put(preSignedUrl, avatarFile)
