@@ -1,7 +1,8 @@
 {
   "name": "wcs-front",
   "version": "0.1.0",
-  "private": true,
+  "author": "Nicolas Oste",
+  "license": "MIT",  
   "dependencies": {
     "@material-ui/core": "^3.9.0",
     "axios": "^0.18.0",
